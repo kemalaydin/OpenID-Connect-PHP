@@ -190,8 +190,8 @@ class OpenIDConnectClient
     private $wellKnown = false;
 
     /**
-     * @var mixed holds well-known opendid configuration parameters, like policy for MS Azure AD B2C User Flow  
-     * @see https://docs.microsoft.com/en-us/azure/active-directory-b2c/user-flow-overview 
+     * @var mixed holds well-known opendid configuration parameters, like policy for MS Azure AD B2C User Flow
+     * @see https://docs.microsoft.com/en-us/azure/active-directory-b2c/user-flow-overview
      */
     private $wellKnownConfigParameters = array();
 
@@ -542,7 +542,7 @@ class OpenIDConnectClient
     }
 
     /**
-     * Set optionnal parameters for .well-known/openid-configuration 
+     * Set optionnal parameters for .well-known/openid-configuration
      *
      * @param string $param
      *
@@ -771,23 +771,22 @@ class OpenIDConnectClient
         $grant_type = 'refresh_token';
         $headers = [];
         $token_params = array(
-            'grant_type' => $grant_type,
-            'refresh_token' => $refresh_token,
-            'client_id' => $this->clientID,
-            'client_secret' => $this->clientSecret,
+          'grant_type' => $grant_type,
+          'refresh_token' => $refresh_token,
+          'client_id' => $this->clientID,
+          'client_secret' => $this->clientSecret,
         );
 
         # Consider Basic authentication if provider config is set this way
         if (in_array('client_secret_basic', $token_endpoint_auth_methods_supported, true)) {
-            $headers = ['Authorization: Basic ' . base64_encode(urlencode($this->clientID) . ':' . urlencode($this->clientSecret))];
-            unset($token_params['client_secret']);
-	        unset($token_params['client_id']);
+          $headers = ['Authorization: Basic ' . base64_encode(urlencode($this->clientID) . ':' . urlencode($this->clientSecret))];
+          unset($token_params['client_secret']);
         }
 
         // Convert token params to string format
         $token_params = http_build_query($token_params, null, '&', $this->enc_type);
 
-        $json = json_decode($this->fetchURL($token_endpoint, $token_params, $headers));
+        $json = json_decode($this->fetchURL($token_endpoint, $token_params, $headers));
 
         if (isset($json->access_token)) {
             $this->accessToken = $json->access_token;
