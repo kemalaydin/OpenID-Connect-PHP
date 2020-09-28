@@ -414,8 +414,9 @@ class OpenIDConnectClient
             throw new OpenIDConnectClientException ('Unable to verify JWT claims');
         }
 
-        $this->requestAuthorization();
-        return false;
+        $redirectUri = $this->requestAuthorization();
+        return $redirectUri;
+        //return false;
 
     }
 
@@ -655,7 +656,8 @@ class OpenIDConnectClient
         $auth_endpoint .= (strpos($auth_endpoint, '?') === false ? '?' : '&') . http_build_query($auth_params, null, '&', $this->enc_type);
 
         $this->commitSession();
-        $this->redirect($auth_endpoint);
+        return $auth_endpoint;
+        //$this->redirect($auth_endpoint);
     }
 
     /**
