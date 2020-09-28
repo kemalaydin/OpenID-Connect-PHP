@@ -22,6 +22,8 @@
 
 namespace Jumbojett;
 
+
+use Illuminate\Http\Request;
 /**
  *
  * JWT signature verification support by Jonathan Reed <jdreed@mit.edu>
@@ -103,6 +105,8 @@ class OpenIDConnectClient
      * @var string arbitrary secret value
      */
     private $clientSecret;
+
+    private $session;
 
     /**
      * @var array holds the provider configuration
@@ -238,7 +242,7 @@ class OpenIDConnectClient
      * @param $client_secret string optional
      * @param null $issuer
      */
-    public function __construct($provider_url = null, $client_id = null, $client_secret = null, $issuer = null) {
+    public function __construct($session, $provider_url = null, $client_id = null, $client_secret = null ,$issuer = null) {
         $this->setProviderURL($provider_url);
         if ($issuer === null) {
             $this->setIssuer($provider_url);
@@ -246,6 +250,7 @@ class OpenIDConnectClient
             $this->setIssuer($issuer);
         }
 
+        $this->session = $session;
         $this->clientID = $client_id;
         $this->clientSecret = $client_secret;
 
@@ -416,8 +421,6 @@ class OpenIDConnectClient
 
         $redirectUri = $this->requestAuthorization();
         return $redirectUri;
-        //return false;
-
     }
 
     /**
@@ -1681,19 +1684,17 @@ class OpenIDConnectClient
     protected function getSessionKey($key) {
         $this->startSession();
 
-        return $_SESSION[$key];
+        return $this->session->get($key);
     }
 
     protected function setSessionKey($key, $value) {
         $this->startSession();
-
-        $_SESSION[$key] = $value;
+        $this->session->put($key,$value);
     }
 
     protected function unsetSessionKey($key) {
         $this->startSession();
-
-        unset($_SESSION[$key]);
+        $this->session->forget($key);
     }
 
     public function setUrlEncoding($curEncoding)
